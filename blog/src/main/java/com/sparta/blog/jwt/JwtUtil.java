@@ -2,6 +2,7 @@ package com.sparta.blog.jwt;
 
 import com.sparta.blog.dto.response.AuthenticatedUser;
 import com.sparta.blog.entity.UserRoleEnum;
+import com.sparta.blog.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -10,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -21,6 +25,8 @@ import java.util.Base64;
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
+
+    private final UserDetailsServiceImpl userDetailsService;
 
     //토큰 생성에 필요한 값
     public static final String AUTHORIZATION_HEADER = "Authorization"; //Header KEY 값
@@ -96,5 +102,11 @@ public class JwtUtil {
         }else {
             throw new IllegalArgumentException("유효하지 않은 토큰!!");
         }
+    }
+
+    // 인증 객체 생성
+    public Authentication createAuthentication(String username) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }

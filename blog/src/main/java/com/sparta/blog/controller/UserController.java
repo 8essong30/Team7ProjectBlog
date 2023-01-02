@@ -16,21 +16,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/post")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
+    public String signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
-        return new ResponseEntity<>("회원가입 성공!", HttpStatus.OK);
+        return "success";
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<String> login(@RequestBody SigninRequestDto SigninRequestDto, HttpServletResponse response) {
-        String generatedToken = userService.signin(SigninRequestDto);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, generatedToken);
-        return new ResponseEntity<>("로그인 성공!", HttpStatus.OK);
+    public String login(@RequestBody SigninRequestDto signinRequestDto, HttpServletResponse response) {
+        userService.signin(signinRequestDto, response);
+        return "success";
     }
 }
