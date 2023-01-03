@@ -1,5 +1,8 @@
 package com.sparta.blog.config;
 
+import com.sparta.blog.entity.UserRoleEnum;
+import com.sparta.blog.exception.CustomAccessDeniedHandler;
+import com.sparta.blog.exception.CustomAuthenticationEntryPoint;
 import com.sparta.blog.jwt.JwtAuthFilter;
 import com.sparta.blog.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
 
     @Bean
@@ -55,6 +60,14 @@ public class WebSecurityConfig {
 
 
         http.formLogin();
+
+        // 401 Error 처리, Authorization 즉, 인증과정에서 실패할 시 처리
+        http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
+
+        // 403 Error 처리, 인증과는 별개로 추가적인 권한이 충족되지 않는 경우
+        http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
+
+
         return http.build();
     }
 
