@@ -53,12 +53,12 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto updatePost(Long postId, PostRequestDto requestDto, String requestedUsername) {
+    public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user) {
 
-        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
-        );
-        Post post = postRepository.findByIdAndUserId(postId, user.getId()).orElseThrow(
+        System.out.println("PostService.updatePost");
+        System.out.println("user.getUsername() = " + user.getUsername());
+
+        Post post = postRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
 
@@ -66,11 +66,7 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    public ResponseEntity<String> deletePost(Long id, String requestedUsername) {
-
-        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
-        );
+    public ResponseEntity<String> deletePost(Long id, User user) {
 
         Post post = postRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
