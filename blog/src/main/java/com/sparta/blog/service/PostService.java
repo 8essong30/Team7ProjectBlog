@@ -3,7 +3,9 @@ package com.sparta.blog.service;
 import com.sparta.blog.dto.request.PostRequestDto;
 import com.sparta.blog.dto.response.PostResponseDto;
 import com.sparta.blog.entity.Post;
+import com.sparta.blog.entity.PostLike;
 import com.sparta.blog.entity.User;
+import com.sparta.blog.repository.PostLikeRepository;
 import com.sparta.blog.repository.PostRepository;
 
 import com.sparta.blog.repository.UserRepository;
@@ -21,21 +23,22 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PostLikeRepository postLikeRepository;
 
     @Transactional
-    public PostResponseDto createPost(PostRequestDto postRequestDto, String requestedUsername) {
+    public PostResponseDto createPost(PostRequestDto postRequestDto, User user) {
 
-        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자 입니다.")
-        );
+        System.out.println("PostService.createPost");
+        System.out.println("user.getUsername() = " + user.getUsername());
 
-        // 요청받은 Dto로 DB에 저장할 객체 만들기
-        Post post = postRepository.save(new Post (postRequestDto, user));
+        // 요청받은 DTO 로 DB에 저장할 객체 만들기
+        Post post = postRepository.saveAndFlush(new Post(postRequestDto, user));
+
         return new PostResponseDto(post);
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponseDto> getAllBlogs() {
+    public List<PostResponseDto> getAllPost() {
         List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
         List<PostResponseDto> postResponseDto = new ArrayList<>();
         for (Post post : posts){
@@ -53,12 +56,12 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto updatePost(Long postId, PostRequestDto requestDto, String requestedUsername) {
+    public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user) {
 
-        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
-        );
-        Post post = postRepository.findByIdAndUserId(postId, user.getId()).orElseThrow(
+        System.out.println("PostService.updatePost");
+        System.out.println("user.getUsername() = " + user.getUsername());
+
+        Post post = postRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
 
@@ -66,18 +69,31 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    public ResponseEntity<String> deletePost(Long id, String requestedUsername) {
-
-        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
-        );
+    @Transactional
+    public ResponseEntity<String> deletePost(Long id, User user) {
 
         Post post = postRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
 
         postRepository.deleteById(id);
-        return new ResponseEntity<>("삭제 성공!", HttpStatus.OK);
+        return new ResponseEntity<>("해당 게시글이 삭제되었습니다.", HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<String> likeOrDislikePost(Long id, User user) {
+        Post post = postRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
+        );
+
+        List<PostLike> postLikes = postLikeRepository.findByUsernameAndPostId(user.getUsername(), id);
+        if (postLikes.isEmpty()) {
+            PostLike postLike = postLikeRepository.save(new PostLike(user.getUsername(), post));
+            return new ResponseEntity<>("해당 게시글에 좋아요를 했습니다.", HttpStatus.OK);
+        } else {
+            postLikeRepository.deleteByUsername(user.getUsername());
+            return new ResponseEntity<>("해당 게시글에 좋아요를 취소하였습니다.", HttpStatus.OK);
+        }
     }
 
 }
