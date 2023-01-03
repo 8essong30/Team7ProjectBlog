@@ -23,14 +23,14 @@ public class PostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public PostResponseDto createPost(PostRequestDto postRequestDto, String requestedUsername) {
+    public PostResponseDto createPost(PostRequestDto postRequestDto, User user) {
 
-        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자 입니다.")
-        );
+        System.out.println("PostService.createPost");
+        System.out.println("user.getUsername() = " + user.getUsername());
 
-        // 요청받은 Dto로 DB에 저장할 객체 만들기
-        Post post = postRepository.save(new Post (postRequestDto, user));
+        // 요청받은 DTO 로 DB에 저장할 객체 만들기
+        Post post = postRepository.saveAndFlush(new Post(postRequestDto, user));
+
         return new PostResponseDto(post);
     }
 
