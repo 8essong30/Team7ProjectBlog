@@ -1,12 +1,10 @@
 package com.sparta.blog.controller;
 
 import com.sparta.blog.dto.request.PostRequestDto;
-import com.sparta.blog.dto.response.AuthenticatedUser;
 import com.sparta.blog.dto.response.PostResponseDto;
 import com.sparta.blog.jwt.JwtUtil;
 import com.sparta.blog.security.UserDetailsImpl;
 import com.sparta.blog.service.PostService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
