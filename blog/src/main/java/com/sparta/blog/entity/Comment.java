@@ -28,9 +28,8 @@ public class Comment extends Timestamped {
 
     private String writer;
 
-    //댓글,대댓글의 좋아요처리부분 입니다. 적절하게 수정해주세요
-//    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
-//    private List<GoodComment> goodComments = new ArrayList<>();
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<CommentLike> commentLikes = new ArrayList<>();
 
 
     ////////대댓글 로직처리//////

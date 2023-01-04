@@ -3,8 +3,10 @@ package com.sparta.blog.service;
 import com.sparta.blog.dto.request.CommentRequestDto;
 import com.sparta.blog.dto.response.CommentResponseDto;
 import com.sparta.blog.entity.Comment;
+import com.sparta.blog.entity.CommentLike;
 import com.sparta.blog.entity.Post;
 import com.sparta.blog.entity.User;
+import com.sparta.blog.repository.CommentLikeRepository;
 import com.sparta.blog.repository.PostRepository;
 import com.sparta.blog.repository.CommentRepository;
 import com.sparta.blog.repository.UserRepository;
@@ -14,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -21,6 +25,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final CommentLikeRepository commentLikeRepository;
     static int group_num=0;//코맨트 그룹화에 사용
 
 
@@ -106,6 +111,22 @@ public class CommentService {
             return new ResponseEntity<>("해당 댓글이 삭제되었습니다.", HttpStatus.OK);
         } else {
             throw new IllegalArgumentException("작성자만 삭제가 가능합니다.");
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<String> likeOrDislikeComment(Long commentId, User user) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+        );
+
+        List<CommentLike> commentLikes = commentLikeRepository.findByUsernameAndCommentId(user.getUsername(), commentId);
+        if (commentLikes.isEmpty()) {
+            CommentLike commentLike = commentLikeRepository.save(new CommentLike(user.getUsername(), comment));
+            return new ResponseEntity<>("해당 댓글에 좋아요를 했습니다.", HttpStatus.OK);
+        } else {
+            commentLikeRepository.deleteByUsername(user.getUsername());
+            return new ResponseEntity<>("좋아요를 취소하였습니다.", HttpStatus.OK);
         }
     }
 

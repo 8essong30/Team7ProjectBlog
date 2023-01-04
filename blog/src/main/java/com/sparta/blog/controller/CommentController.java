@@ -39,4 +39,9 @@ public class CommentController {
         return commentService.deleteComment(postId, commentId, userDetails.getUser());
     }
 
+    @PostMapping("/{postId}/comments/{commentId}")
+    public ResponseEntity<String> likeOrDislikeComment(@PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.likeOrDislikeComment(commentId, userDetails.getUser());
+    }
+
 }

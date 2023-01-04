@@ -2,6 +2,7 @@ package com.sparta.blog.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.blog.entity.Comment;
+import com.sparta.blog.entity.CommentLike;
 import com.sparta.blog.entity.Post;
 import lombok.Getter;
 
@@ -16,8 +17,9 @@ public class CommentResponseDto {
     private String contents;
     private LocalDateTime modifiedAt;
     private LocalDateTime createdAt;
-    //좋아요 추가해주세요
-    //private int LikeComment
+
+    private int commentLikesCount;
+    private List<CommentLikeResponseDto> likedUsers;
     private List<CommentResponseDto> commentList = new ArrayList<>();
 
 
@@ -50,7 +52,14 @@ public class CommentResponseDto {
         this.id = post.getComments().get(i).getId();
         this.writer = post.getComments().get(i).getWriter();
         this.contents = post.getComments().get(i).getContents();
-        //this.GoodCommentCount = post.getCommentList().get(i).getGoodComments().size();
+
+        this.commentLikesCount = post.getComments().get(i).getCommentLikes().size();
+        List<CommentLikeResponseDto> likedUserList = new ArrayList<>();
+        for (CommentLike commentLike : post.getComments().get(i).getCommentLikes()) {
+            likedUserList.add(new CommentLikeResponseDto(commentLike));
+        }
+        this.likedUsers = likedUserList;
+
         this.max_index = i;
         this.ref = post.getComments().get(i).getRef();
         this.deps = post.getComments().get(i).getDeps();
