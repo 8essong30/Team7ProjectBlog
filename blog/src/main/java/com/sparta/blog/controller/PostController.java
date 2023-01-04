@@ -31,7 +31,7 @@ public class PostController {
         return postService.getAllPost();
     }
 
-    @GetMapping("/posts")
+    @GetMapping("/posts/page")
     public List<PostResponseDto> getPagingPost(@RequestBody PageDTO pageDTO){
         return postService.getPagingPost(pageDTO);
     }
