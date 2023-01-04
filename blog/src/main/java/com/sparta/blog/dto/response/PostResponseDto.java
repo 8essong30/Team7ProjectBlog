@@ -2,6 +2,7 @@ package com.sparta.blog.dto.response;
 
 import com.sparta.blog.entity.Post;
 import com.sparta.blog.entity.Comment;
+import com.sparta.blog.entity.PostLike;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -19,8 +20,8 @@ public class PostResponseDto {
 
     private List<CommentResponseDto> comments;
 
-
-    //좋아요는??
+    private int postLIkesCount;
+    private List<PostLikeResponseDto> likedUsers;
 
 
     public PostResponseDto(Post post) {
@@ -30,6 +31,13 @@ public class PostResponseDto {
         this.contents = post.getContents();
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
+
+        this.postLIkesCount = post.getPostLikes().size();
+        List<PostLikeResponseDto> likedUserList = new ArrayList<>();
+        for (PostLike postLike : post.getPostLikes()) {
+            likedUserList.add(new PostLikeResponseDto(postLike));
+        }
+        this.likedUsers = likedUserList;
 
         CommentResponseDto commentResponseDto = new CommentResponseDto();
         this.comments = commentResponseDto.recursionDTO(post,0,0);

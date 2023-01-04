@@ -31,6 +31,9 @@ public class Post extends Timestamped {
     @OrderBy("ref asc , deps asc, refOrder asc")
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany (mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<PostLike> postLikes  = new ArrayList<>();
+
     public Post(String title, String contents) {
         this.title = title;
         this.contents = contents;
@@ -47,7 +50,4 @@ public class Post extends Timestamped {
         this.contents = requestDto.getContents();
     }
 
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
-    }
 }
