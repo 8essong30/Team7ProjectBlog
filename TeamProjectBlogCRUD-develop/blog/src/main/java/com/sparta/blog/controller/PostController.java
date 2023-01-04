@@ -27,7 +27,7 @@ public class PostController {
     @PostMapping("/posts")
     @ApiOperation(value = "Create Post", notes = "Create post Page")
     public PostResponseDto createPost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return postService.createPost(requestDto, userDetails.getUser());
+        return postService.createPost(requestDto, userDetails.getUser().getUsername());
     }
 
     @GetMapping("/posts")
@@ -51,13 +51,13 @@ public class PostController {
     @PutMapping("/posts/{id}")
     @ApiOperation(value = "Update Post", notes = "Update post Page")
     public PostResponseDto updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return postService.updatePost(id, requestDto, userDetails.getUser());
+        return postService.updatePost(id, requestDto, userDetails.getUser().getUsername());
     }
 
     @DeleteMapping("/posts/{id}")
     @ApiOperation(value = "Delete Post", notes = "Delete post Page")
     public ResponseEntity<String> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return postService.deletePost(id, userDetails.getUser());
+        return postService.deletePost(id, userDetails.getUser().getUsername());
     }
 
     @PostMapping("/posts/{id}")

@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> {
     List<CommentLike> findByUsernameAndCommentId(String username, Long commentId);
-
     List<CommentLike> deleteByUsername(String username);
 }

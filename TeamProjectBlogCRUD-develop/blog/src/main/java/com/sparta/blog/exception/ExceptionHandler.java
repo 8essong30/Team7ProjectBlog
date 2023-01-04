@@ -3,7 +3,7 @@ package com.sparta.blog.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
 
 @RestControllerAdvice
 public class ExceptionHandler {
@@ -14,7 +14,6 @@ public class ExceptionHandler {
         restApiException.setErrorCode("400");
         restApiException.setHttpStatus(HttpStatus.BAD_REQUEST);
         restApiException.setErrorMessage(e.getMessage());
-
         return new ResponseEntity(restApiException, HttpStatus.BAD_REQUEST);
     }
 
@@ -24,7 +23,6 @@ public class ExceptionHandler {
         restApiException.setErrorCode("400");
         restApiException.setHttpStatus(HttpStatus.BAD_REQUEST);
         restApiException.setErrorMessage(e.getFieldError().getDefaultMessage());
-
         return new ResponseEntity(restApiException, HttpStatus.BAD_REQUEST);
     }
 

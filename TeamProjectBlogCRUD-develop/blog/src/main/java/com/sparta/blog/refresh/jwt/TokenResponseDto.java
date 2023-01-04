@@ -1,6 +1,5 @@
 package com.sparta.blog.refresh.jwt;
 
-import com.sparta.blog.refresh.RefreshToken;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,8 +11,8 @@ public class TokenResponseDto {
     private String accessToken;
     private String refreshToken;
 
-    public TokenResponseDto(String accessToken,  RefreshToken refreshToken) {
+    public TokenResponseDto(String accessToken,  String refreshToken) {
         this.accessToken = accessToken;
-        this.refreshToken = refreshToken.getToken();
+        this.refreshToken = refreshToken;
     }
 }

@@ -31,8 +31,8 @@ public class UserController {
     @ResponseBody
     @PostMapping("/signin")
     @ApiOperation(value = "Post signin", notes = "Post signIn page")
-    public TokenResponseDto login(@RequestBody SigninRequestDto signinRequestDto, HttpServletResponse response) {
-        return userService.signin(signinRequestDto, response);
+    public TokenResponseDto login(@RequestBody SigninRequestDto signinRequestDto) {
+        return userService.signin(signinRequestDto);
     }
 
 

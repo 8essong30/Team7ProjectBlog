@@ -25,5 +25,8 @@ public class PostLike {
         this.post = post;
     }
 
+    //dto 엔티티에 넣지말기.
+    //연관관계분리
+
 
 }

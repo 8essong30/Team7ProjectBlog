@@ -23,21 +23,17 @@ public class AdminService {
 
     @Transactional
     public PostResponseDto updatePostByAdmin(Long postId, PostRequestDto requestDto) {
-
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
-
         post.update(requestDto);
         return new PostResponseDto(post);
     }
 
     public ResponseEntity<String> deletePostByAdmin(Long id) {
-
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
-
         postRepository.deleteById(id);
         return new ResponseEntity<>("삭제 성공!", HttpStatus.OK);
     }
@@ -54,16 +50,14 @@ public class AdminService {
     }
 
     @Transactional
-    public CommentResponseDto updateCommentByAdmin(Long postId, Long commentId, CommentRequestDto requestDto){
+    public CommentResponseDto updateCommentByAdmin(Long postId, Long commentId, CommentRequestDto requestDto) {
 
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
-
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
         );
-
         comment.updateComment(requestDto);
         return new CommentResponseDto(comment);
     }

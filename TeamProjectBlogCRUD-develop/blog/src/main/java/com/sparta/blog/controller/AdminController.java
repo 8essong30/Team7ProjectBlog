@@ -45,7 +45,7 @@ public class AdminController {
     @Secured(UserRoleEnum.Authority.ADMIN)
     @DeleteMapping("/posts/{postId}")
     @ApiOperation(value = "Delete post by admin", notes = "Delete post by admin Page")
-    public ResponseEntity<String> deletePostByAdmin(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity<String> deletePostByAdmin(@PathVariable Long postId, HttpServletRequest request) {
 
         String token = jwtUtil.resolveToken(request);
 
@@ -53,7 +53,7 @@ public class AdminController {
             AuthenticatedUser authenticatedUser = jwtUtil.validateTokenAndGetInfo(token);
             if (!authenticatedUser.getUserRoleEnum().equals(UserRoleEnum.ADMIN))
                 throw new IllegalArgumentException("권한이 없습니다.");
-            return adminService.deletePostByAdmin(id);
+            return adminService.deletePostByAdmin(postId);
         } else {
             return new ResponseEntity<>("토큰이 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
         }

@@ -18,13 +18,11 @@ public class CategoryService {
         List<Category> parentCateogryList = categoryRepository.findCategoriesByLayer(0);
         return parentCateogryList.stream().map(parentCateogryList1 -> new CategoryResponse(parentCateogryList1,categoriesAllList)).collect(Collectors.toList());
     }
-
     @Transactional
     public void createParentCategory(CategoryRequest req) {
        Category category = new Category(req);
         categoryRepository.save(category);
     }
-
     @Transactional
     public void createChildrenCategory(long id,CategoryRequest req) {
         Category category = categoryRepository.findById(id).orElseThrow(IllegalArgumentException::new);
@@ -32,14 +30,11 @@ public class CategoryService {
         Category category1 = new Category(req.getName(),category.getName(),layer);
         categoryRepository.save(category1);
     }
-
-
     @Transactional
     public void delete(Long id) {
         if(notExistsCategory(id)) throw new IllegalStateException("ERORR");
         categoryRepository.deleteById(id);
     }
-
     private boolean notExistsCategory(Long id) {
         return !categoryRepository.existsById(id);
     }
