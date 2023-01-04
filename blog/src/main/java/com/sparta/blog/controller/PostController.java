@@ -1,5 +1,6 @@
 package com.sparta.blog.controller;
 
+import com.sparta.blog.dto.request.PageDTO;
 import com.sparta.blog.dto.request.PostRequestDto;
 import com.sparta.blog.dto.response.AuthenticatedUser;
 import com.sparta.blog.dto.response.PostResponseDto;
@@ -30,6 +31,11 @@ public class PostController {
     @GetMapping("/posts")
     public List<PostResponseDto> getAllPost() {
         return postService.getAllPost();
+    }
+
+    @GetMapping("/posts")
+    public List<PostResponseDto> getPagingPost(@RequestBody PageDTO pageDTO){
+        return postService.getPagingPost(pageDTO);
     }
 
     @GetMapping("/posts/{id}")

@@ -28,6 +28,7 @@ public class CommentController {
         String token = jwtUtil.resolveToken(request);
 
         // 토큰 유효성 검증, 토큰에서 사용자 정보 가져오기
+        //시큐리티 적용하실때 username 넘기는걸 userDetails.getUser() 넘기는 방식으로 바꿔주세요
         if (token != null) {
             AuthenticatedUser authenticatedUser = jwtUtil.validateTokenAndGetInfo(token);
             return commentService.createComment(postId, commentRequest, authenticatedUser.getUsername());
