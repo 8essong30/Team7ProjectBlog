@@ -27,6 +27,8 @@ public class Post extends Timestamped {
     private User user;
 
     @OneToMany (mappedBy = "post", cascade = CascadeType.REMOVE)
+    // 1.그룹순 2.깊이순 3.reforder순으로 정렬필요
+    @OrderBy("ref asc , deps asc, refOrder asc")
     private List<Comment> comments = new ArrayList<>();
 
     public Post(String title, String contents) {

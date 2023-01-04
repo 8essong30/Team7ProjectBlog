@@ -19,6 +19,10 @@ public class PostResponseDto {
 
     private List<CommentResponseDto> comments;
 
+
+    //좋아요는??
+
+
     public PostResponseDto(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
@@ -27,10 +31,7 @@ public class PostResponseDto {
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
 
-        List<CommentResponseDto> list = new ArrayList<>();
-        for (Comment comment : post.getComments()) {
-            list.add(new CommentResponseDto(comment));
-        }
-        this.comments = list;
+        CommentResponseDto commentResponseDto = new CommentResponseDto();
+        this.comments = commentResponseDto.recursionDTO(post,0,0);
     }
 }
