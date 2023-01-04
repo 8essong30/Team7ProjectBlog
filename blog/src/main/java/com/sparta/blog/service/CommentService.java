@@ -40,8 +40,6 @@ public class CommentService {
             );
         }
 
-
-
         Comment comment = null;
         //3.댓글 저장
         int deps;

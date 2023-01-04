@@ -8,8 +8,6 @@ import com.sparta.blog.dto.response.PostResponseDto;
 import com.sparta.blog.entity.UserRoleEnum;
 import com.sparta.blog.jwt.JwtUtil;
 import com.sparta.blog.service.AdminService;
-import com.sparta.blog.service.CommentService;
-import com.sparta.blog.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
