@@ -1,8 +1,8 @@
 package com.sparta.blog.controller;
 
-import com.sparta.blog.dto.request.PageDTO;
-import com.sparta.blog.dto.request.PostRequestDto;
-import com.sparta.blog.dto.response.PostResponseDto;
+import com.sparta.blog.dto.page.PageResponseDto;
+import com.sparta.blog.dto.post.PostRequestDto;
+import com.sparta.blog.dto.post.PostResponseDto;
 import com.sparta.blog.entity.PostLike;
 import com.sparta.blog.jwt.JwtUtil;
 import com.sparta.blog.repository.PostLikeRepository;
@@ -11,7 +11,6 @@ import com.sparta.blog.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -42,14 +41,14 @@ public class PostController {
 
     @GetMapping("/posts/page")
     @Operation(summary = "Get paging post ", description = "Get paging post Page")
-    public List<PostResponseDto> getPagingPost(@RequestBody PageDTO pageDTO){
-        return postService.getPagingPost(pageDTO);
+    public List<PostResponseDto> getPagingPost(@RequestBody PageResponseDto pageResponseDTO){
+        return postService.getPagingPost(pageResponseDTO);
     }
 
     @GetMapping("/posts/{id}")
     @Operation(summary = "View only one post ", description = "View only one post Page")
     public PostResponseDto getPost(@PathVariable Long id) {
-        return postService.getPosts(id);
+        return postService.getPost(id);
     }
 
     @PutMapping("/posts/{id}")

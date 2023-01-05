@@ -1,12 +1,11 @@
 package com.sparta.blog.controller;
 
-import com.sparta.blog.dto.request.SigninRequestDto;
-import com.sparta.blog.dto.request.SignupRequestDto;
-import com.sparta.blog.refresh.jwt.TokenResponseDto;
+import com.sparta.blog.dto.user.SigninRequestDto;
+import com.sparta.blog.dto.user.SignupRequestDto;
+import com.sparta.blog.dto.jwt.TokenResponseDto;
 import com.sparta.blog.security.UserDetailsImpl;
 import com.sparta.blog.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,7 +29,7 @@ public class UserController {
     @ResponseBody
     @PostMapping("/signin")
     @Operation(summary = "Post signin", description = "Post signIn page")
-    public TokenResponseDto login(@RequestBody SigninRequestDto signinRequestDto) {
+    public TokenResponseDto signin(@RequestBody SigninRequestDto signinRequestDto) {
         return userService.signin(signinRequestDto);
     }
 
@@ -39,10 +38,10 @@ public class UserController {
      * Delete user
      * Writer by Park
      */
-    @PreAuthorize("isAuthenticated() and (( #userDetails.username == principal.username ) or hasRole('ADMIN'))")
+    @PreAuthorize("isAuthenticated() or hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     @Operation(summary = "Delete User", description = "Delete User page")
-    public String deleteUser(@PathVariable("id") Long id,
+    public String resign(@PathVariable("id") Long id,
                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userService.deleteUser(id, userDetails.getUser())) {
             return "Success delete user";

@@ -1,6 +1,6 @@
 package com.sparta.blog.jwt;
 
-import com.sparta.blog.dto.response.AuthenticatedUser;
+import com.sparta.blog.dto.user.AuthenticatedUser;
 import com.sparta.blog.entity.UserRoleEnum;
 import com.sparta.blog.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
