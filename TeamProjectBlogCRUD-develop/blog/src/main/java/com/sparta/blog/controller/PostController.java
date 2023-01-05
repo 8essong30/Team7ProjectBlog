@@ -1,9 +1,11 @@
 package com.sparta.blog.controller;
 
-import com.sparta.blog.dto.request.PageDTO;
-import com.sparta.blog.dto.request.PostRequestDto;
-import com.sparta.blog.dto.response.PostResponseDto;
+import com.sparta.blog.dto.page.PageResponseDto;
+import com.sparta.blog.dto.post.PostRequestDto;
+import com.sparta.blog.dto.post.PostResponseDto;
+import com.sparta.blog.entity.PostLike;
 import com.sparta.blog.jwt.JwtUtil;
+import com.sparta.blog.repository.PostLikeRepository;
 import com.sparta.blog.security.UserDetailsImpl;
 import com.sparta.blog.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +25,7 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
     private final JwtUtil jwtUtil;
+    private final PostLikeRepository postLikeRepository;
 
     @PostMapping("/posts")
     @Operation(summary = "Create Post", description = "Create post Page")
@@ -38,14 +41,14 @@ public class PostController {
 
     @GetMapping("/posts/page")
     @Operation(summary = "Get paging post ", description = "Get paging post Page")
-    public List<PostResponseDto> getPagingPost(@RequestBody PageDTO pageDTO){
-        return postService.getPagingPost(pageDTO);
+    public List<PostResponseDto> getPagingPost(@RequestBody PageResponseDto pageResponseDTO){
+        return postService.getPagingPost(pageResponseDTO);
     }
 
     @GetMapping("/posts/{id}")
     @Operation(summary = "View only one post ", description = "View only one post Page")
     public PostResponseDto getPost(@PathVariable Long id) {
-        return postService.getPosts(id);
+        return postService.getPost(id);
     }
 
     @PutMapping("/posts/{id}")
@@ -60,10 +63,27 @@ public class PostController {
         return postService.deletePost(id, userDetails.getUser().getUsername());
     }
 
-    @PostMapping("/posts/{id}")
-    @Operation(summary = "Like or Cancel like post", description = "Like or Cancel Like post Page")
-    public ResponseEntity<String> likeOrDislikePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @PostMapping("/heart/posts/{id}")
+    @Operation(summary = "Like post", description = "Like post Page")
+    public ResponseEntity<String> likePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String username = userDetails.getUsername();
-        return postService.likeOrDislikePost(id, username);
+        PostLike postLike = postLikeRepository.findByUsernameAndPostId(username, id);
+        if (postLike == null) {
+            return postService.likePost(id, username);
+        } else {
+            throw new IllegalArgumentException("You already did like on the post");
+        }
+    }
+
+    @DeleteMapping("/heart/posts/{id}")
+    @Operation(summary = "Cancel liked post", description = "Cancel liked post Page")
+    public ResponseEntity<String> cancelLikedPost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        String username = userDetails.getUsername();
+        PostLike postLike = postLikeRepository.findByUsernameAndPostId(username, id);
+        if (postLike != null) {
+            return postService.cancelLikedPost(id, username);
+        } else {
+            throw new IllegalArgumentException("You didn't like on the post");
+        }
     }
 }

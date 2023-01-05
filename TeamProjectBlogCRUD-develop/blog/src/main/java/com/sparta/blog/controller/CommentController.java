@@ -1,19 +1,15 @@
 package com.sparta.blog.controller;
 
-import com.sparta.blog.dto.request.CommentRequestDto;
-import com.sparta.blog.dto.response.AuthenticatedUser;
-import com.sparta.blog.dto.response.CommentResponseDto;
-import com.sparta.blog.entity.UserRoleEnum;
+import com.sparta.blog.dto.comment.CommentRequestDto;
+import com.sparta.blog.dto.comment.CommentResponseDto;
+import com.sparta.blog.entity.CommentLike;
 import com.sparta.blog.jwt.JwtUtil;
-import com.sparta.blog.repository.PostRepository;
-import com.sparta.blog.repository.UserRepository;
+import com.sparta.blog.repository.CommentLikeRepository;
 import com.sparta.blog.security.UserDetailsImpl;
 import com.sparta.blog.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +22,7 @@ public class CommentController {
 
     private final JwtUtil jwtUtil;
     private final CommentService commentService;
+    private final CommentLikeRepository commentLikeRepository;
 
     @PostMapping("/{postId}/comments")
     @Operation(summary = "Create Comment", description = "Create Comment Page")
@@ -46,11 +43,28 @@ public class CommentController {
         return commentService.deleteComment(postId, commentId, userDetails.getUser());
     }
 
-    @PostMapping("/{postId}/comments/{commentId}")
-    @Operation(summary = "Like or Cancel Like Comment", description = "Like or Cancel Like Comment Page")
-    public ResponseEntity<String> likeOrDislikeComment(@PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+@PostMapping("/{postId}/heart/comments/{commentId}")
+@Operation(summary = "Like Comment", description = "Like Comment Page")
+public ResponseEntity<String> likeComment(@PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    String username = userDetails.getUsername();
+    CommentLike commentLike = commentLikeRepository.findByUsernameAndCommentId(username, commentId);
+    if (commentLike == null) {
+        return commentService.likeComment(commentId, username);
+    } else {
+        throw new IllegalArgumentException("You already did like on the comment");
+    }
+}
+
+    @DeleteMapping("{postId}/heart/comments/{commentId}")
+    @Operation(summary = "Cancel Liked Comment", description = "Cancel Liked Comment Page")
+    public ResponseEntity<String> cancelLikedComment(@PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String username = userDetails.getUsername();
-        return commentService.likeOrDislikeComment(commentId, username);
+        CommentLike commentLike = commentLikeRepository.findByUsernameAndCommentId(username, commentId);
+        if (commentLike != null) {
+            return commentService.cancelLikedComment(commentId, username);
+        } else {
+            throw new IllegalArgumentException("You didn't like on the comment");
+        }
     }
 
 }

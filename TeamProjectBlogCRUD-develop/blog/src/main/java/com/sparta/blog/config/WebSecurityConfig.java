@@ -67,22 +67,23 @@ public class WebSecurityConfig {
         // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeHttpRequests()
-                        .requestMatchers("/api/users/**").permitAll()
-                        .requestMatchers("/api/posts/**").permitAll()
-                        .requestMatchers("/api/categories/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
-                        //Swagger set up
-                        //Writer By Park
-                        .anyRequest().authenticated()
+                .requestMatchers("/api/users/**").permitAll()
+                .requestMatchers("/api/posts/**").permitAll()
+                .requestMatchers("/api/categories/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                //Swagger set up
+                //Writer By Park
+                .anyRequest().authenticated()
                 .and()
                 // JWT 인증/인가를 사용하기 위한 설정
                 .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         http.formLogin().disable();
         // 401 Error 처리, Authorization 즉, 인증과정에서 실패할 시 처리
-         http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
+        http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
         // 403 Error 처리, 인증과는 별개로 추가적인 권한이 충족되지 않는 경우
-          http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
+        http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
         return http.build();
     }
 
