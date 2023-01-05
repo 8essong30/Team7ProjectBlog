@@ -72,7 +72,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/categories/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 //Swagger set up
                 //Writer By Park
                 .anyRequest().authenticated()
