@@ -34,7 +34,7 @@ public class PostService {
 
     @Transactional
     public PostResponseDto createPost(PostRequestDto postRequestDto, String usernmae) {
-        Category category = categoryRepository.findByName(postRequestDto.getCategory());
+        Category category = categoryRepository.findByName(postRequestDto.getCategory()).orElseThrow();
         // 요청받은 DTO 로 DB에 저장할 객체 만들기
         Post post = postRepository.saveAndFlush(new Post(postRequestDto, usernmae,category));
         return new PostResponseDto(post);

@@ -1,8 +1,9 @@
 package com.sparta.blog.category;
 
 import com.sparta.blog.jwt.JwtUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,20 +14,20 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Api(tags = {"2. Category RestAPI"})
+@SecurityRequirement(name = "Bearer Authentication")
 public class CategoryController {
 
     private final CategoryService categoryService;
     @GetMapping("/api/categories")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "View all category", notes = "View all category list Page")
+    @Operation(summary = "View all category", description = "View all category list Page")
     public List<CategoryResponse> readAll() {
         return categoryService.readAll();
     }
     @PreAuthorize("isAuthenticated() and hasRole('ADMIN')")
     @PostMapping("/api/categories")
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "Create category", notes = "Create category Page")
+    @Operation(summary = "Create category", description = "Create category Page")
     public ResponseEntity<String> createParent(@RequestBody CategoryRequest req) {
             categoryService.createParentCategory(req);
             return new ResponseEntity<>("Create parent category ", HttpStatus.CREATED);
@@ -34,7 +35,7 @@ public class CategoryController {
 
     @PostMapping("/api/categories/{categoryParentId}")
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "Create category", notes = "Create category Page")
+    @Operation(summary = "Create category", description = "Create category Page")
     @PreAuthorize("isAuthenticated() and hasRole('ADMIN')")
     public ResponseEntity<String> createChildren(@PathVariable("categoryParentId") long id, @RequestBody CategoryRequest req) {
         categoryService.createChildrenCategory(id, req);
@@ -43,7 +44,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/api/categories/{id}")
-    @ApiOperation(value = "Delete category", notes = "Delete category Page")
+    @Operation(summary = "Delete category",description = "Delete category Page")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isAuthenticated() and hasRole('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Long id) {

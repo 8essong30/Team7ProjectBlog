@@ -28,10 +28,6 @@ public class Category {
     private String parent;
     private int layer = 0;
 
-//    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE) // 게시글 삭제시 댓글삭제도 같이되어야힘.
-//    private List<Post> post = new ArrayList<>();
-
-
     public Category(String name, String parent, int layer) {
         this.name = name;
         this.parent = parent;

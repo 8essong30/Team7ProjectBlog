@@ -6,8 +6,8 @@ import com.sparta.blog.jwt.JwtUtil;
 import com.sparta.blog.refresh.jwt.TokenRequestDto;
 import com.sparta.blog.refresh.jwt.TokenResponseDto;
 import com.sparta.blog.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/users")
-@Api(tags = {"5. Refresh Token RestAPI"})
+@SecurityRequirement(name = "Bearer Authentication")
 public class RefreshController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/reissue")
-    @ApiOperation(value = "Reissue refresh token", notes = "Reissue refresh token Page")
+    @Operation(summary = "Reissue refresh token", description = "Reissue refresh token Page")
     public TokenResponseDto reissue(HttpServletRequest request, @RequestBody TokenRequestDto tokenRequestDto) {
         String resolvedAccessToken = jwtUtil.resolveAccessToken(tokenRequestDto.getAccessToken());
         //Access 토큰 username가져오기
