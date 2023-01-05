@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> {
-    List<CommentLike> findByUsernameAndCommentId(String username, Long commentId);
-    List<CommentLike> deleteByUsername(String username);
+    CommentLike findByUsernameAndCommentId(String username, Long commentId);
+    List<CommentLike> deleteByCommentIdAndUsername(Long commentId, String username);
 }

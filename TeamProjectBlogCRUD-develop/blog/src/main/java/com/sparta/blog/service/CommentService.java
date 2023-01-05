@@ -2,10 +2,7 @@ package com.sparta.blog.service;
 
 import com.sparta.blog.dto.request.CommentRequestDto;
 import com.sparta.blog.dto.response.CommentResponseDto;
-import com.sparta.blog.entity.Comment;
-import com.sparta.blog.entity.CommentLike;
-import com.sparta.blog.entity.Post;
-import com.sparta.blog.entity.User;
+import com.sparta.blog.entity.*;
 import com.sparta.blog.repository.CommentLikeRepository;
 import com.sparta.blog.repository.PostRepository;
 import com.sparta.blog.repository.CommentRepository;
@@ -14,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -97,19 +92,37 @@ public class CommentService {
         }
     }
 
+//    @Transactional
+//    public ResponseEntity<String> likeOrDislikeComment(Long commentId, String username) {
+//        Comment comment = commentRepository.findById(commentId).orElseThrow(
+//                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+//        );
+//        List<CommentLike> commentLikes = commentLikeRepository.findByUsernameAndCommentId(username, commentId);
+//        if (commentLikes.isEmpty()) {
+//            commentLikeRepository.save(new CommentLike(username, comment));
+//            return new ResponseEntity<>("해당 댓글에 좋아요를 했습니다.", HttpStatus.OK);
+//        } else {
+//            commentLikeRepository.deleteByUsername(username);
+//            return new ResponseEntity<>("좋아요를 취소하였습니다.", HttpStatus.OK);
+//        }
+//    }
+
     @Transactional
-    public ResponseEntity<String> likeOrDislikeComment(Long commentId, String username) {
+    public ResponseEntity<String> likeComment(Long commentId, String username) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
-        List<CommentLike> commentLikes = commentLikeRepository.findByUsernameAndCommentId(username, commentId);
-        if (commentLikes.isEmpty()) {
-            commentLikeRepository.save(new CommentLike(username, comment));
-            return new ResponseEntity<>("해당 댓글에 좋아요를 했습니다.", HttpStatus.OK);
-        } else {
-            commentLikeRepository.deleteByUsername(username);
-            return new ResponseEntity<>("좋아요를 취소하였습니다.", HttpStatus.OK);
-        }
+        commentLikeRepository.save(new CommentLike(username, comment));
+        return new ResponseEntity<>("You liked the comment", HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<String> cancelLikedComment(Long commentId, String username) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
+        );
+        commentLikeRepository.deleteByCommentIdAndUsername(commentId, username);
+        return new ResponseEntity<>("You canceled the like on the post", HttpStatus.OK);
     }
 
 }
