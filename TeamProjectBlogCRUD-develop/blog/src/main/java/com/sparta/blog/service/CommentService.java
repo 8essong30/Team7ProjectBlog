@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -91,21 +93,6 @@ public class CommentService {
             throw new IllegalArgumentException("작성자만 삭제가 가능합니다.");
         }
     }
-
-//    @Transactional
-//    public ResponseEntity<String> likeOrDislikeComment(Long commentId, String username) {
-//        Comment comment = commentRepository.findById(commentId).orElseThrow(
-//                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
-//        );
-//        List<CommentLike> commentLikes = commentLikeRepository.findByUsernameAndCommentId(username, commentId);
-//        if (commentLikes.isEmpty()) {
-//            commentLikeRepository.save(new CommentLike(username, comment));
-//            return new ResponseEntity<>("해당 댓글에 좋아요를 했습니다.", HttpStatus.OK);
-//        } else {
-//            commentLikeRepository.deleteByUsername(username);
-//            return new ResponseEntity<>("좋아요를 취소하였습니다.", HttpStatus.OK);
-//        }
-//    }
 
     @Transactional
     public ResponseEntity<String> likeComment(Long commentId, String username) {

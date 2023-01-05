@@ -45,7 +45,7 @@ public class WebSecurityConfig {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 //Swagger Ignoring set up.
                 //Writer By Park
-                .requestMatchers("/v3/api-docs", "/configuration/ui",
+                .requestMatchers("/v3/api-docs/**", "/configuration/ui",
                         "/swagger-resources/**", "/configuration/security",
                         "/swagger-ui/**", "/webjars/**", "/swagger/**");
     }
@@ -53,7 +53,7 @@ public class WebSecurityConfig {
     /**
      * It serves to render (the process of creating html) the information requested by the user
      * 사용자가 요청한 정보를 랜더링 하는 역할
-     * Writer By Park
+     * Writer By ParkW
      */
     @Bean
     public InternalResourceViewResolver defaultViewResolver() {
@@ -70,7 +70,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/api/posts/**").permitAll()
                         .requestMatchers("/api/categories/**").permitAll()
-                .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
                         //Swagger set up
                         //Writer By Park
                         .anyRequest().authenticated()
