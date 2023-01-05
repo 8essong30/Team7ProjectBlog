@@ -40,4 +40,12 @@ public class RefreshController {
         }
         throw new IllegalStateException("Vaild Error");
     }
+
+    //끝났다는말이expire
+    //다시로그인할필요가없다.
+    //리프레쉬토큰이 만료면 로그인페이지
+    //리프레쉬토큰이 리이슈가되니까
+    //access토큰이 계속재발하게된다.
+    //
+
 }
