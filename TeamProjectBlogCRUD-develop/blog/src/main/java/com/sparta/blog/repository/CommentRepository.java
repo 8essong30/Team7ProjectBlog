@@ -12,9 +12,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    //List<Comment> findAllByOrderByModifiedAtDesc();
-
-
     @Modifying
     @Transactional
     @Query("update Comment c set c.refOrder = c.refOrder+1 where c.refOrder > :num and c.post = :post")

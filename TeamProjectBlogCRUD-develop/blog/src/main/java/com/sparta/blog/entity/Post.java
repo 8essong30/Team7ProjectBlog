@@ -23,9 +23,7 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private String username;
 
     @OneToMany (mappedBy = "post", cascade = CascadeType.REMOVE)
     // 1.그룹순 2.깊이순 3.reforder순으로 정렬필요
@@ -46,11 +44,11 @@ public class Post extends Timestamped {
         this.contents = contents;
     }
 
-    public Post(PostRequestDto requestDto, User user,Category category) {
+    public Post(PostRequestDto requestDto, String username,Category category) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
         this.category = category;
-        this.user = user;
+        this.username = username;
     }
 
     public void update(PostRequestDto requestDto) {

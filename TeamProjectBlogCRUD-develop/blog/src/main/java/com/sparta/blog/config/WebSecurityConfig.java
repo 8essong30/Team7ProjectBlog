@@ -45,50 +45,44 @@ public class WebSecurityConfig {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 //Swagger Ignoring set up.
                 //Writer By Park
-                .requestMatchers("/v2/api-docs", "/configuration/ui",
-                        "/swagger-resources", "/configuration/security",
-                        "/swagger-ui.html", "/webjars/**", "/swagger/**");
+                .requestMatchers("/v3/api-docs/**", "/configuration/ui",
+                        "/swagger-resources/**", "/configuration/security",
+                        "/swagger-ui/**", "/webjars/**", "/swagger/**");
     }
 
     /**
      * It serves to render (the process of creating html) the information requested by the user
      * 사용자가 요청한 정보를 랜더링 하는 역할
-     * Writer By Park
+     * Writer By ParkW
      */
     @Bean
     public InternalResourceViewResolver defaultViewResolver() {
         return new InternalResourceViewResolver();
     }
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
-
         // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
         http.authorizeHttpRequests()
-                .requestMatchers("/api/users/**").permitAll()
-                .requestMatchers("/api/posts/**").permitAll()
-                .requestMatchers("/api/categories/**").permitAll()
-                //Swagger set up
-                //Writer By Park
-                .requestMatchers( "/swagger-ui/").permitAll()
-                .requestMatchers("/swagger-resources/**").permitAll()
-                .anyRequest().authenticated()
+                        .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/posts/**").permitAll()
+                        .requestMatchers("/api/categories/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        //Swagger set up
+                        //Writer By Park
+                        .anyRequest().authenticated()
+                .and()
                 // JWT 인증/인가를 사용하기 위한 설정
-                .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-
-
-        http.formLogin();
-
+                .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.formLogin().disable();
         // 401 Error 처리, Authorization 즉, 인증과정에서 실패할 시 처리
-        http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
-
+         http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
         // 403 Error 처리, 인증과는 별개로 추가적인 권한이 충족되지 않는 경우
-        http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
-
-
+          http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
         return http.build();
     }
 

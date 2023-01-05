@@ -33,15 +33,10 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
 
     @Transactional
-    public PostResponseDto createPost(PostRequestDto postRequestDto, User user) {
-
-        System.out.println("PostService.createPost");
-        System.out.println("user.getUsername() = " + user.getUsername());
-        Category category = categoryRepository.findByName(postRequestDto.getCategory());
-
+    public PostResponseDto createPost(PostRequestDto postRequestDto, String usernmae) {
+        Category category = categoryRepository.findByName(postRequestDto.getCategory()).orElseThrow();
         // 요청받은 DTO 로 DB에 저장할 객체 만들기
-        Post post = postRepository.saveAndFlush(new Post(postRequestDto, user,category));
-
+        Post post = postRepository.saveAndFlush(new Post(postRequestDto, usernmae,category));
         return new PostResponseDto(post);
     }
 
@@ -94,26 +89,19 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user) {
-
-        System.out.println("PostService.updatePost");
-        System.out.println("user.getUsername() = " + user.getUsername());
-
-        Post post = postRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+    public PostResponseDto updatePost(Long id, PostRequestDto requestDto, String username) {
+        Post post = postRepository.findByIdAndUsername(id, username).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
-
         post.update(requestDto);
         return new PostResponseDto(post);
     }
 
     @Transactional
-    public ResponseEntity<String> deletePost(Long id, User user) {
-
-        Post post = postRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+    public ResponseEntity<String> deletePost(Long id, String username) {
+        Post post = postRepository.findByIdAndUsername(id, username).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
-
         postRepository.deleteById(id);
         return new ResponseEntity<>("해당 게시글이 삭제되었습니다.", HttpStatus.OK);
     }
