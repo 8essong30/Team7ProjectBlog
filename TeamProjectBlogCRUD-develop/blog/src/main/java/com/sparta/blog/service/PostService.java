@@ -107,19 +107,20 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseEntity<String> likeOrDislikePost(Long id, String username) {
+    public ResponseEntity<String> likePost(Long id, String username) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
-
-        List<PostLike> postLikes = postLikeRepository.findByUsernameAndPostId(username, id);
-        if (postLikes.isEmpty()) {
-            PostLike postLike = postLikeRepository.save(new PostLike(username, post));
-            return new ResponseEntity<>("해당 게시글에 좋아요를 했습니다.", HttpStatus.OK);
-        } else {
-            postLikeRepository.deleteByUsername(username);
-            return new ResponseEntity<>("해당 게시글에 좋아요를 취소하였습니다.", HttpStatus.OK);
-        }
+        postLikeRepository.save(new PostLike(username, post));
+        return new ResponseEntity<>("You liked the post", HttpStatus.OK);
     }
 
+    @Transactional
+    public ResponseEntity<String> cancelLikedPost(Long id, String username) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
+        );
+        postLikeRepository.deleteByPostIdAndUsername(id, username);
+        return new ResponseEntity<>("You canceled the like on the post", HttpStatus.OK);
+    }
 }
